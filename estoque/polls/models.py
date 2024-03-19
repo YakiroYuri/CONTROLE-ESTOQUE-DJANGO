@@ -10,10 +10,60 @@ from simple_history.models import HistoricalRecords
 # category (foreign key), show (boolean), owner (foreign key)
 # picture (imagem)
 
-cimatec1 = 'CIMATEC 01'
-cimatec2 = 'CIMATEC 02'
-cimatec3 = 'CIMATEC 03'
-cimatec4 = 'CIMATEC 05'
+SALA_CHOICES = [
+        ('SALA 1.1.03', 'SALA 1.1.03'),
+        ('SALA 1.1.04', 'SALA 1.1.04'),
+        ('SALA 1.1.05' ,'SALA 1.1.05'),         
+        ('Laboratório de H&P', 'Laboratório de H&P'  ),            
+        ('Laboratório Telecomunicações', 'Laboratório Telecomunicações'),           
+        ('Laboratório de Robótica', 'Laboratório de Robótica'),            
+        ('Laboratório de Sistemas Digitais', 'Laboratório de Sistemas Digitais'),            
+        ('Laboratório BIM', 'Laboratório BIM'),            
+        ('Laboratório CAX', 'Laboratório CAX'),
+        ('Laboratório de Eletrônica', 'Laboratório de Eletrônica'),
+        ('Laboratório de Informática 1', 'Laboratório de Informática 1'),
+        ('Laboratório de Informática 2', 'Laboratório de Informática 2'),
+        ('Laboratório de Informática 3', 'Laboratório de Informática 3'),
+        ('Laboratório de Programação Avançada', 'Laboratório de Programação Avançada'),
+        ('Laboratório Cyber', 'Laboratório Cyber'),
+        ('SALA 2.1.01', 'SALA 2.1.01'),
+        ('SALA 2.1.02', 'SALA 2.1.02'),
+        ('SALA 2.1.03', 'SALA 2.1.03'),
+        ('SALA 2.1.04', 'SALA 2.1.04'),
+        ('SALA 2.1.06', 'SALA 2.1.06'),
+        ('SALA 2.1.07', 'SALA 2.1.07'),
+        ('SALA 2.1.08', 'SALA 2.1.08'),
+        ('SALA 2.1.09', 'SALA 2.1.09'),
+        ('SALA 2.2.01', 'SALA 2.2.01'),
+        ('SALA 2.2.02', 'SALA 2.2.02'),
+        ('SALA 2.2.03', 'SALA 2.2.03'),
+        ('SALA 2.2.04', 'SALA 2.2.04'),
+        ('SALA 2.2.05', 'SALA 2.2.05'),
+        ('SALA 2.2.06', 'SALA 2.2.06'),
+        ('SALA 2.2.08', 'SALA 2.2.08'),
+        ('SALA 2.2.09', 'SALA 2.2.09'),
+        ('SALA 2.2.10', 'SALA 2.2.10'),
+        ('SALA 2.3.01 (AUDITÓRIO)', 'SALA 2.3.01 (AUDITÓRIO)'),
+        ('SALA 2.3.03', 'SALA 2.3.03'),
+        ('SALA 2.3.09 (AUDITÓRIO)', 'SALA 2.3.09 (AUDITÓRIO)'),
+        ('SALA 2.3.05', 'SALA 2.3.05'),
+        ('SALA 2.3.06', 'SALA 2.3.06'),     
+        ('Laboratório de Simulação Numérica', 'Laboratório de Simulação Numérica'),
+        ('Laboratório de Redes', 'Laboratório de Redes'),
+        ('Laboratório de Software', 'Laboratório de Software'),
+        ('Laboratório de Equipamentos Industriais', 'Laboratório de Equipamentos Industriais'),
+        ('Laboratório de Gestão Empresarial', 'Laboratório de Gestão Empresarial'),
+        ('Laboratório de Transporte e Distribuição', 'Laboratório de Transporte e Distribuição'),
+        ('SALA 4.1.1','SALA 4.1.1'),
+        ('SALA 4.1.2', 'SALA 4.1.2'),
+        ('SALA 4.1.3','SALA 4.1.3'),
+        ('SALA 4.1.4', 'SALA 4.1.4'),
+        ('SALA 4.1.5', 'SALA 4.1.5'),
+        ('SALA 4.1.6', 'SALA 4.1.6'),
+        ('SALA 4.1.7', 'SALA 4.1.7'),
+        ('SALA 4.1.8', 'SALA 4.1.8'),
+]
+
 
 class Estoque(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -21,16 +71,23 @@ class Estoque(models.Model):
     retirada = models.IntegerField(default=0)
     estoque = models.IntegerField()
     data_estoque = models.DateTimeField(default=timezone.now)
-    sala_laboratorio = models.CharField(max_length=100, blank=True)
+    sala_laboratorio = models.CharField(max_length=50, choices=SALA_CHOICES,blank=True)
     history = HistoricalRecords()
 
     def __str__(self) -> str:
         return f'{self.nome}'
 
     def save(self, *args, **kwargs):
-        # Subtrai o valor de retirada do estoque
-        self.estoque -= self.retirada
-        super().save(*args, **kwargs)
+         # Subtrai o valor de retirada do estoque
+         self.estoque -= self.retirada
+         super().save(*args, **kwargs)
+
+    def realizar_retirada(self):
+        if self.retirada > 0:
+            self.estoque -= self.retirada
+            self.save()  # Salva o objeto após subtrair a retirada do estoque
+            self.retirada = 0  # Reseta o valor de retirada após a operação
+            super().save()  # Salva novamente para refletir o valor de retirada zerado
 
 class Estoque_da_at(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -38,13 +95,19 @@ class Estoque_da_at(models.Model):
     retirada = models.IntegerField(default=0)
     estoque = models.IntegerField()
     data_estoque = models.DateTimeField(default=timezone.now)
-    sala_laboratorio = models.CharField(max_length=100, blank=True)
     history = HistoricalRecords()
 
     def __str__(self) -> str:
         return f'{self.nome}'
 
     def save(self, *args, **kwargs):
-        # Subtrai o valor de retirada do estoque
-        self.estoque -= self.retirada
-        super().save(*args, **kwargs)
+         # Subtrai o valor de retirada do estoque
+         self.estoque -= self.retirada
+         super().save(*args, **kwargs)
+    
+    def realizar_retirada(self):
+        if self.retirada > 0:
+            self.estoque -= self.retirada
+            self.save()  # Salva o objeto após subtrair a retirada do estoque
+            self.retirada = 0  # Reseta o valor de retirada após a operação
+            super().save()  # Salva novamente para refletir o valor de retirada zerado

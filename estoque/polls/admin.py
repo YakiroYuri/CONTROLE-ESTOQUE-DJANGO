@@ -17,15 +17,15 @@ class EstoqueAdmin(SimpleHistoryAdmin):
     history_list_display = ["retirada", 'sala_laboratorio']
 
 class EstoqueatAdmin(SimpleHistoryAdmin):
-    list_display = 'id', 'nome', 'estoque', 'retirada', 'sala_laboratorio'
+    list_display = 'id', 'nome', 'estoque', 'retirada'
     ordering = 'id',
     # list_filter = 'created_date',
     search_fields = 'id', 'nome',
     list_per_page = 20
     list_max_show_all = 200
-    list_editable = 'retirada', 'sala_laboratorio',
+    list_editable = 'retirada',
     list_display_links = 'id', 'nome',
-    history_list_display = ["retirada", 'sala_laboratorio']
+    history_list_display = ["retirada"]
 
 
 admin.site.register(models.Estoque, EstoqueAdmin)
