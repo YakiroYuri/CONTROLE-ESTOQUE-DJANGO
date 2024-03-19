@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>HELLO, WORLD!</h1>
+
+    <h2>Testando Dados</h2>
+
+    <ul>
+        {% for dado in dados %}
+        <li> NOME: {{ dado.nome }} - QUANTIDADE: {{ dado.estoque }} </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
